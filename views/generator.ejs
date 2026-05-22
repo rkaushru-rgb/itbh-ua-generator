@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title><%= title %></title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#050816;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
+@keyframes rgbPop{0%,100%{transform:scale(1) translateY(0);opacity:1}50%{transform:scale(1.15) translateY(-3px);opacity:.85}}
+@keyframes fireBurn{0%,100%{transform:scaleY(1) translateY(0);filter:brightness(1)}50%{transform:scaleY(1.18) translateY(-3px);filter:brightness(1.35)}}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.08)}66%{transform:translate(-20px,20px) scale(.96)}}
+@keyframes particleRise{0%{transform:translateY(0) scale(1);opacity:.7}100%{transform:translateY(-120vh) scale(0);opacity:0}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(30px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.18;pointer-events:none;animation:orbFloat 12s ease-in-out infinite}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,#7c3aed,transparent 70%);top:-100px;left:-100px}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,#4f46e5,transparent 70%);bottom:-80px;right:-80px;animation-delay:-4s}
+.orb3{width:350px;height:350px;background:radial-gradient(circle,#7c3aed,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-8s}
+.particles{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.particle{position:absolute;bottom:-10px;width:3px;height:3px;border-radius:50%;background:rgba(139,92,246,.7);animation:particleRise linear infinite}
+.container{max-width:980px;margin:0 auto;padding:32px 20px 60px;position:relative;z-index:1}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;background:rgba(15,23,42,.6);border:1px solid rgba(139,92,246,.15);border-radius:14px;padding:12px 20px}
+.topbar-brand{font-size:.82rem;font-weight:700;letter-spacing:1px;color:#a78bfa}
+.topbar-user{display:flex;align-items:center;gap:14px;font-size:.75rem;color:#64748b}
+.topbar-user strong{color:#c4b5fd}
+.logout-btn{color:#475569;text-decoration:none;font-size:.72rem;padding:5px 12px;border:1px solid rgba(139,92,246,.2);border-radius:8px;transition:all .2s}
+.logout-btn:hover{color:#a78bfa;border-color:rgba(139,92,246,.5)}
+.header{text-align:center;margin-bottom:28px;animation:fadeIn .8s ease}
+.header-title{font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;letter-spacing:2px;margin-bottom:6px;line-height:1.1}
+.header-title span{background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header-brand{font-size:clamp(.9rem,2.5vw,1.2rem);font-weight:700;letter-spacing:3px;margin-bottom:10px;color:#94a3b8}
+.badges{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.badge-fire{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:30px;border:1px solid rgba(255,100,0,.4);background:rgba(255,60,0,.08);font-size:.72rem;font-weight:700;letter-spacing:.5px}
+.flame{animation:fireBurn .6s ease-in-out infinite}
+.main-card{background:rgba(15,23,42,.75);border:1px solid rgba(139,92,246,.2);border-radius:24px;padding:clamp(20px,4vw,38px);backdrop-filter:blur(20px);box-shadow:0 8px 60px rgba(0,0,0,.5)}
+.section-title{font-size:1rem;font-weight:800;letter-spacing:2px;text-align:center;margin-bottom:6px;margin-top:2px}
+.section-hint{color:#94a3b8;font-size:.72rem;text-align:center;margin-bottom:12px}
+.section-divider{border:none;border-top:1px solid rgba(139,92,246,.12);margin:24px 0}
+.device-grid{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:6px}
+.device-card{width:108px;height:108px;border-radius:50%;background:rgba(255,255,255,.04);border:2px solid rgba(139,92,246,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .25s ease;position:relative;color:#e2e8f0;user-select:none}
+.device-card:hover{border-color:rgba(139,92,246,.6);background:rgba(124,58,237,.12);transform:translateY(-3px)}
+.device-card.active{border-color:#7c3aed;background:rgba(124,58,237,.2);box-shadow:0 0 22px rgba(124,58,237,.45)}
+.device-card .icon{font-size:2.2rem;pointer-events:none}
+.device-card .label{font-size:.65rem;font-weight:700;letter-spacing:.5px;pointer-events:none}
+.check-badge{position:absolute;top:6px;right:6px;background:#7c3aed;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:.58rem;color:#fff;font-weight:700}
+.os-section{margin-top:16px;display:none}
+.os-section.show{display:block}
+.picker-row{background:rgba(124,58,237,.07);border:1px solid rgba(139,92,246,.22);border-radius:10px;padding:10px 14px;margin-bottom:10px}
+.picker-row-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.picker-row-title{color:#c4b5fd;font-size:.8rem;font-weight:600;display:flex;align-items:center;gap:8px}
+.sel-count-badge{background:rgba(124,58,237,.3);border:1px solid #7c3aed;border-radius:20px;padding:2px 10px;font-size:.66rem;color:#c4b5fd}
+.mp-wrap{position:relative}
+.mp-trigger{width:100%;background:#0f172a;border:1px solid rgba(139,92,246,.4);border-radius:8px;color:#94a3b8;padding:9px 36px 9px 12px;font-size:.8rem;font-family:'Poppins',sans-serif;cursor:pointer;text-align:left;display:flex;align-items:center;transition:border-color .2s,box-shadow .2s;user-select:none}
+.mp-trigger.has-sel{color:#a78bfa}
+.mp-trigger:hover,.mp-trigger.open{border-color:#7c3aed;box-shadow:0 0 0 2px rgba(124,58,237,.3)}
+.mp-arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:#6b7280;font-size:.65rem;pointer-events:none;transition:transform .2s}
+.mp-arrow.open{transform:translateY(-50%) rotate(180deg)}
+.mp-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#0f172a;border:1px solid rgba(139,92,246,.45);border-radius:10px;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,.7);max-height:280px;display:flex;flex-direction:column;overflow:hidden}
+.mp-top{padding:8px 10px;display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.mp-search{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(139,92,246,.3);border-radius:6px;color:#e2e8f0;padding:5px 10px;font-size:.76rem;font-family:'Poppins',sans-serif;outline:none}
+.mp-search::placeholder{color:#475569}
+.mp-btn{background:rgba(255,255,255,.06);border:1px solid rgba(139,92,246,.3);border-radius:6px;color:#a78bfa;padding:4px 10px;font-size:.7rem;cursor:pointer;white-space:nowrap;font-family:'Poppins',sans-serif}
+.mp-btn:hover{background:rgba(124,58,237,.25)}
+.mp-list{overflow-y:auto;flex:1}
+.mp-item{display:flex;align-items:center;gap:8px;padding:7px 12px;cursor:pointer;transition:background .1s}
+.mp-item:hover{background:rgba(124,58,237,.12)}
+.mp-item.checked{background:rgba(124,58,237,.16)}
+.mp-checkbox{width:14px;height:14px;flex-shrink:0;border-radius:3px;border:1px solid rgba(139,92,246,.5);background:transparent;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.mp-checkbox.checked{background:#7c3aed;border-color:#7c3aed}
+.mp-item-name{font-size:.78rem;color:#e2e8f0}
+.mp-empty{padding:12px;color:#64748b;font-size:.76rem;text-align:center}
+.os-custom-ver{margin-top:10px}
+.os-custom-ver label{display:block;font-size:.7rem;font-weight:600;color:#7c6aaa;margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
+.os-custom-ver input{width:100%;padding:9px 14px;background:#0f172a;border:1.5px solid rgba(139,92,246,.2);border-radius:8px;color:#e2e8f0;font-size:.82rem;font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s}
+.os-custom-ver input:focus{border-color:#7c3aed}
+.os-custom-ver input::placeholder{color:#334155}
+.browser-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:6px}
+.browser-card{width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.04);border:2px solid rgba(139,92,246,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:all .25s ease;position:relative;user-select:none}
+.browser-card:hover{transform:translateY(-3px);background:rgba(124,58,237,.1)}
+.browser-card.active{border-color:#a78bfa;background:rgba(124,58,237,.18);box-shadow:0 0 18px rgba(124,58,237,.4)}
+.browser-card .bicon{font-size:1.8rem;pointer-events:none}
+.browser-card .blabel{font-size:.6rem;font-weight:700;color:#94a3b8;pointer-events:none}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:14px}
+.form-group label{display:block;font-size:.72rem;font-weight:600;color:#a78bfa;margin-bottom:5px;letter-spacing:.5px;text-transform:uppercase}
+.form-group select,.form-group input[type=number]{width:100%;padding:11px 16px;background:#111936;border:2px solid rgba(102,126,234,.3);border-radius:12px;color:#fff;font-size:.88rem;font-weight:600;font-family:'Poppins',sans-serif;transition:all .25s;outline:none;appearance:none;-webkit-appearance:none;color-scheme:dark}
+.form-group input[type=number]{appearance:textfield;-moz-appearance:textfield}
+.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23a8b3cf'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;background-color:#111936}
+.form-group select:focus,.form-group input[type=number]:focus{border-color:#667eea;box-shadow:0 0 20px rgba(102,126,234,.3)}
+.btn-group{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:26px}
+.btn{border:none;border-radius:14px;font-family:'Poppins',sans-serif;font-weight:800;font-size:.9rem;cursor:pointer;padding:14px 30px;letter-spacing:1px;text-transform:uppercase;transition:all .25s;position:relative;overflow:hidden}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 6px 24px rgba(124,58,237,.45)}
+.btn-primary:hover:not(:disabled){transform:translateY(-3px);box-shadow:0 10px 32px rgba(124,58,237,.6)}
+.btn-secondary{background:rgba(255,255,255,.08);color:#a78bfa;border:1px solid rgba(139,92,246,.4)}
+.btn-secondary:hover:not(:disabled){background:rgba(124,58,237,.2);border-color:#7c3aed}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important}
+.btn-rgb-text span{display:inline-block;animation:rgbPop 1.8s ease-in-out infinite}
+.loader{width:40px;height:40px;border:4px solid rgba(124,58,237,.2);border-top-color:#7c3aed;border-radius:50%;animation:spin .8s linear infinite;margin:24px auto;display:none}
+.loader.show{display:block}
+.results{margin-top:22px;animation:fadeIn .4s ease;display:none}
+.results.show{display:block}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.results h3{color:#a78bfa;font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.results-count{font-size:.75rem;color:#64748b}
+.output-area{width:100%;min-height:180px;max-height:320px;background:rgba(0,0,0,.4);border:1px solid rgba(139,92,246,.3);border-radius:12px;color:#a5f3fc;font-size:.7rem;font-family:'Courier New',monospace;padding:14px;resize:vertical;outline:none;line-height:1.8;white-space:pre-wrap;word-break:break-all}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px}
+.stat-card{background:rgba(255,255,255,.04);border:1px solid rgba(139,92,246,.2);border-radius:14px;padding:16px 10px;text-align:center}
+.stat-number{display:block;font-size:1.4rem;font-weight:800;background:linear-gradient(135deg,#7c3aed,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:.65rem;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.site-footer{text-align:center;padding:28px 20px 16px;border-top:1px solid rgba(139,92,246,.1);margin-top:36px;position:relative;z-index:1}
+.footer-brand{font-size:.85rem;font-weight:700;letter-spacing:2px;margin-bottom:4px}
+.footer-copy{font-size:.68rem;color:#475569}
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(30px);background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;padding:10px 24px;border-radius:30px;font-size:.8rem;font-weight:700;opacity:0;pointer-events:none;transition:all .35s ease;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.error{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+.err-msg{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:10px;padding:10px 16px;margin-top:14px;font-size:.78rem;color:#fca5a5;display:none}
+.err-msg.show{display:flex;align-items:center;gap:8px}
+@media(max-width:600px){
+  .device-card{width:88px;height:88px}.device-card .icon{font-size:2rem}
+  .browser-card{width:74px;height:74px}.browser-card .bicon{font-size:1.5rem}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr}
+  .topbar{flex-direction:column;gap:10px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="particles" id="particles"></div>
+
+<div class="container">
+
+  <div class="topbar">
+    <span class="topbar-brand">IT TECH BROTHERS HUB</span>
+    <div class="topbar-user">
+      <span>Licensed: <strong><%= license.full_name %></strong></span>
+      <span style="font-family:monospace;font-size:.68rem;color:#475569"><%= license.license_key %></span>
+      <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+  </div>
+
+  <header class="header">
+    <h1 class="header-title">USER AGENT <span>GENERATOR</span></h1>
+    <div class="header-brand">IT TECH BROTHERS HUB</div>
+    <div class="badges">
+      <span class="badge-fire"><span class="flame">🔥</span> UNLIMITED GENERATION</span>
+      <span class="badge-fire"><span class="flame">⚡</span> UNIQUE ONLY — NEVER REPEATED</span>
+      <span class="badge-fire"><span class="flame">🛡️</span> SERVER-SIDE SECURED</span>
+    </div>
+  </header>
+
+  <div class="main-card">
+
+    <p class="section-title">STEP 1 — SELECT DEVICE TYPE</p>
+    <p class="section-hint">Multiple selections allowed</p>
+
+    <div class="device-grid" id="deviceGrid">
+      <div class="device-card" data-device="desktop" onclick="toggleDevice(this)">
+        <span class="icon">🖥️</span>
+        <span class="label">DESKTOP</span>
+      </div>
+      <div class="device-card" data-device="mobile" onclick="toggleDevice(this)">
+        <span class="icon">📱</span>
+        <span class="label">MOBILE</span>
+      </div>
+      <div class="device-card" data-device="tablet" onclick="toggleDevice(this)">
+        <span class="icon">📟</span>
+        <span class="label">TABLET</span>
+      </div>
+      <div class="device-card" data-device="smarttv" onclick="toggleDevice(this)">
+        <span class="icon">📺</span>
+        <span class="label">SMART TV</span>
+      </div>
+    </div>
+
+    <hr class="section-divider"/>
+
+    <p class="section-title">STEP 2 — SELECT OPERATING SYSTEM</p>
+    <p class="section-hint">Multiple selections allowed — customize OS version below</p>
+
+    <div class="os-section show" id="osSection">
+      <div class="picker-row">
+        <div class="picker-row-header">
+          <span class="picker-row-title"><i class="fas fa-layer-group"></i> Operating Systems</span>
+          <span class="sel-count-badge" id="osCount">0 selected</span>
+        </div>
+        <div class="mp-wrap" id="osPicker">
+          <button type="button" class="mp-trigger" id="osTrigger" onclick="togglePicker('osPicker')">
+            Choose OS (multiple)...
+          </button>
+          <i class="fas fa-chevron-down mp-arrow" id="osArrow"></i>
+          <div class="mp-panel" id="osPanel" style="display:none">
+            <div class="mp-top">
+              <input class="mp-search" placeholder="Search OS..." oninput="filterPicker('osPicker',this.value)"/>
+              <button class="mp-btn" onclick="selectAllPicker('osPicker')">All</button>
+              <button class="mp-btn" onclick="clearPicker('osPicker')">Clear</button>
+            </div>
+            <div class="mp-list" id="osPickerList">
+              <div class="mp-item" data-val="windows" onclick="togglePickerItem(this,'osPicker')">
+                <div class="mp-checkbox"></div>
+                <span class="mp-item-name">🪟 Windows</span>
+              </div>
+              <div class="mp-item" data-val="macos" onclick="togglePickerItem(this,'osPicker')">
+                <div class="mp-checkbox"></div>
+                <span class="mp-item-name">🍎 macOS</span>
+              </div>
+              <div class="mp-item" data-val="linux" onclick="togglePickerItem(this,'osPicker')">
+                <div class="mp-checkbox"></div>
+                <span class="mp-item-name">🐧 Linux</span>
+              </div>
+              <div class="mp-item" data-val="android" onclick="togglePickerItem(this,'osPicker')">
+                <div class="mp-checkbox"></div>
+                <span class="mp-item-name">🤖 Android</span>
+              </div>
+              <div class="mp-item" data-val="ios" onclick="togglePickerItem(this,'osPicker')">
+                <div class="mp-checkbox"></div>
+                <span class="mp-item-name">📱 iOS / iPadOS</span>
+              </div>
+              <div class="mp-item" data-val="chromeos" onclick="togglePickerItem(this,'osPicker')">
+                <div class="mp-checkbox"></div>
+                <span class="mp-item-name">🌐 ChromeOS</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="os-custom-ver">
+          <label><i class="fas fa-sliders-h"></i> Custom OS Version (optional — leave blank for random)</label>
+          <input type="text" id="osVersion" placeholder="e.g. 14, 13.6, 10.0 — applied to all selected OS"/>
+        </div>
+      </div>
+    </div>
+
+    <hr class="section-divider"/>
+
+    <p class="section-title">STEP 3 — SELECT BROWSER</p>
+    <p class="section-hint">Multiple selections allowed — includes TikTok In-App Browser</p>
+
+    <div class="browser-grid" id="browserGrid">
+      <div class="browser-card" data-browser="chrome" onclick="toggleBrowser(this)" title="Google Chrome">
+        <span class="bicon">🟢</span>
+        <span class="blabel">CHROME</span>
+      </div>
+      <div class="browser-card" data-browser="firefox" onclick="toggleBrowser(this)" title="Mozilla Firefox">
+        <span class="bicon">🦊</span>
+        <span class="blabel">FIREFOX</span>
+      </div>
+      <div class="browser-card" data-browser="safari" onclick="toggleBrowser(this)" title="Apple Safari">
+        <span class="bicon">🧭</span>
+        <span class="blabel">SAFARI</span>
+      </div>
+      <div class="browser-card" data-browser="edge" onclick="toggleBrowser(this)" title="Microsoft Edge">
+        <span class="bicon">🔵</span>
+        <span class="blabel">EDGE</span>
+      </div>
+      <div class="browser-card" data-browser="opera" onclick="toggleBrowser(this)" title="Opera">
+        <span class="bicon">🔴</span>
+        <span class="blabel">OPERA</span>
+      </div>
+      <div class="browser-card" data-browser="samsung" onclick="toggleBrowser(this)" title="Samsung Browser">
+        <span class="bicon">📡</span>
+        <span class="blabel">SAMSUNG</span>
+      </div>
+      <div class="browser-card" data-browser="tiktok" onclick="toggleBrowser(this)" title="TikTok In-App Browser">
+        <span class="bicon">🎵</span>
+        <span class="blabel">TIKTOK</span>
+      </div>
+    </div>
+
+    <hr class="section-divider"/>
+
+    <p class="section-title">STEP 4 — BATCH SIZE</p>
+    <p class="section-hint">Customizable — generate up to 500 unique agents per batch</p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Batch Size</label>
+        <input type="number" id="batchSize" value="10" min="1" max="500" style="width:100%;padding:11px 16px;background:#111936;border:2px solid rgba(102,126,234,.3);border-radius:12px;color:#fff;font-size:.88rem;font-weight:600;font-family:'Poppins',sans-serif;outline:none"/>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary btn-rgb-text" id="generateBtn" onclick="doGenerate()">
+        <span>⚡</span> <span>G</span><span>E</span><span>N</span><span>E</span><span>R</span><span>A</span><span>T</span><span>E</span>
+      </button>
+      <button class="btn btn-secondary" onclick="copyAll()" id="copyBtn" disabled>
+        <i class="fas fa-copy"></i> COPY ALL
+      </button>
+      <button class="btn btn-secondary" onclick="downloadTxt()" id="dlBtn" disabled>
+        <i class="fas fa-download"></i> DOWNLOAD .TXT
+      </button>
+      <button class="btn btn-secondary" onclick="clearResults()">
+        <i class="fas fa-trash"></i> CLEAR
+      </button>
+    </div>
+
+    <div class="err-msg" id="errMsg"><i class="fas fa-exclamation-circle"></i> <span id="errText"></span></div>
+    <div class="loader" id="loader"></div>
+
+    <div class="results" id="results">
+      <div class="results-header">
+        <h3><i class="fas fa-terminal"></i> Generated User Agents</h3>
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+      <textarea class="output-area" id="outputArea" readonly spellcheck="false"></textarea>
+    </div>
+
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-number" id="statTotal"><%= stats.total_generated || 0 %></span>
+      <span class="stat-label">Total Generated</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number">∞</span>
+      <span class="stat-label">Pool Size</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number"><%= stats.unique_browsers || 0 %></span>
+      <span class="stat-label">Browsers</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-number"><%= stats.unique_os || 0 %></span>
+      <span class="stat-label">OS Types</span>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-brand">IT TECH BROTHERS HUB</div>
+    <div class="footer-copy">© <%= new Date().getFullYear() %> IT Tech Brothers Hub. All Rights Reserved. Licensed Use Only.</div>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var selectedDevices = [];
+var selectedOS = [];
+var selectedBrowsers = [];
+var lastResults = [];
+
+function toggleDevice(el) {
+  var d = el.dataset.device;
+  var idx = selectedDevices.indexOf(d);
+  if (idx === -1) {
+    selectedDevices.push(d);
+    el.classList.add('active');
+    if (!el.querySelector('.check-badge')) {
+      var cb = document.createElement('span');
+      cb.className = 'check-badge';
+      cb.innerHTML = '✓';
+      el.appendChild(cb);
+    }
+  } else {
+    selectedDevices.splice(idx, 1);
+    el.classList.remove('active');
+    var badge = el.querySelector('.check-badge');
+    if (badge) badge.remove();
+  }
+}
+
+function toggleBrowser(el) {
+  var b = el.dataset.browser;
+  var idx = selectedBrowsers.indexOf(b);
+  if (idx === -1) {
+    selectedBrowsers.push(b);
+    el.classList.add('active');
+    if (!el.querySelector('.check-badge')) {
+      var cb = document.createElement('span');
+      cb.className = 'check-badge';
+      cb.innerHTML = '✓';
+      el.appendChild(cb);
+    }
+  } else {
+    selectedBrowsers.splice(idx, 1);
+    el.classList.remove('active');
+    var badge = el.querySelector('.check-badge');
+    if (badge) badge.remove();
+  }
+}
+
+var pickerStates = {};
+
+function togglePicker(id) {
+  var panel = document.getElementById(id + 'Panel');
+  var arrow = document.getElementById(id.replace('Picker','') + 'Arrow');
+  var trigger = document.getElementById(id.replace('Picker','') + 'Trigger');
+  var isOpen = panel.style.display !== 'none';
+  document.querySelectorAll('.mp-panel').forEach(function(p){ p.style.display='none'; });
+  document.querySelectorAll('.mp-arrow').forEach(function(a){ a.classList.remove('open'); });
+  document.querySelectorAll('.mp-trigger').forEach(function(t){ t.classList.remove('open'); });
+  if (!isOpen) {
+    panel.style.display = 'flex';
+    arrow && arrow.classList.add('open');
+    trigger && trigger.classList.add('open');
+  }
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.mp-wrap')) {
+    document.querySelectorAll('.mp-panel').forEach(function(p){ p.style.display='none'; });
+    document.querySelectorAll('.mp-arrow').forEach(function(a){ a.classList.remove('open'); });
+    document.querySelectorAll('.mp-trigger').forEach(function(t){ t.classList.remove('open'); });
+  }
+});
+
+function togglePickerItem(el, pickerId) {
+  el.classList.toggle('checked');
+  var cb = el.querySelector('.mp-checkbox');
+  cb.classList.toggle('checked');
+  if (cb.classList.contains('checked')) {
+    cb.innerHTML = '✓';
+    var val = el.dataset.val;
+    if (pickerId === 'osPicker' && selectedOS.indexOf(val) === -1) selectedOS.push(val);
+  } else {
+    cb.innerHTML = '';
+    var val = el.dataset.val;
+    if (pickerId === 'osPicker') {
+      var i = selectedOS.indexOf(val);
+      if (i !== -1) selectedOS.splice(i, 1);
+    }
+  }
+  updatePickerTrigger(pickerId);
+}
+
+function selectAllPicker(pickerId) {
+  var items = document.querySelectorAll('#' + pickerId + 'List .mp-item');
+  selectedOS = [];
+  items.forEach(function(item) {
+    item.classList.add('checked');
+    var cb = item.querySelector('.mp-checkbox');
+    cb.classList.add('checked');
+    cb.innerHTML = '✓';
+    if (pickerId === 'osPicker') selectedOS.push(item.dataset.val);
+  });
+  updatePickerTrigger(pickerId);
+}
+
+function clearPicker(pickerId) {
+  var items = document.querySelectorAll('#' + pickerId + 'List .mp-item');
+  items.forEach(function(item) {
+    item.classList.remove('checked');
+    var cb = item.querySelector('.mp-checkbox');
+    cb.classList.remove('checked');
+    cb.innerHTML = '';
+  });
+  if (pickerId === 'osPicker') selectedOS = [];
+  updatePickerTrigger(pickerId);
+}
+
+function filterPicker(pickerId, query) {
+  var items = document.querySelectorAll('#' + pickerId + 'List .mp-item');
+  var q = query.toLowerCase();
+  items.forEach(function(item) {
+    var name = item.querySelector('.mp-item-name').textContent.toLowerCase();
+    item.style.display = name.includes(q) ? '' : 'none';
+  });
+}
+
+function updatePickerTrigger(pickerId) {
+  var baseId = pickerId.replace('Picker','');
+  var trigger = document.getElementById(baseId + 'Trigger');
+  var countEl = document.getElementById(baseId + 'Count');
+  var count = pickerId === 'osPicker' ? selectedOS.length : 0;
+  if (count === 0) {
+    trigger.textContent = 'Choose OS (multiple)...';
+    trigger.classList.remove('has-sel');
+  } else {
+    trigger.textContent = count + ' OS selected';
+    trigger.classList.add('has-sel');
+  }
+  if (countEl) countEl.textContent = count + ' selected';
+}
+
+async function doGenerate() {
+  var errMsg = document.getElementById('errMsg');
+  var errText = document.getElementById('errText');
+  errMsg.classList.remove('show');
+
+  var device = selectedDevices.length > 0 ? selectedDevices[0] : null;
+  if (!device) { showErr('Please select at least one device type.'); return; }
+  if (selectedOS.length === 0) { showErr('Please select at least one Operating System.'); return; }
+  if (selectedBrowsers.length === 0) { showErr('Please select at least one browser.'); return; }
+  var batch = parseInt(document.getElementById('batchSize').value) || 10;
+  if (batch < 1 || batch > 500) { showErr('Batch size must be between 1 and 500.'); return; }
+
+  var btn = document.getElementById('generateBtn');
+  var loader = document.getElementById('loader');
+  var results = document.getElementById('results');
+  btn.disabled = true;
+  loader.classList.add('show');
+  results.classList.remove('show');
+
+  var osVer = document.getElementById('osVersion').value.trim();
+
+  var params = new URLSearchParams();
+  params.append('device', device);
+  selectedOS.forEach(function(o){ params.append('os', o); });
+  selectedBrowsers.forEach(function(b){ params.append('browser', b); });
+  params.append('batchSize', batch);
+  if (osVer) params.append('osVersion', osVer);
+
+  try {
+    var resp = await fetch('/generate', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: params.toString()
+    });
+    var data = await resp.json();
+
+    loader.classList.remove('show');
+    btn.disabled = false;
+
+    if (!data.ok) {
+      showErr(data.msg || 'Generation failed.');
+      return;
+    }
+
+    lastResults = data.agents;
+    document.getElementById('outputArea').value = data.agents.join('\n');
+    document.getElementById('resultsCount').textContent = data.count + ' user agents generated';
+    results.classList.add('show');
+    document.getElementById('copyBtn').disabled = false;
+    document.getElementById('dlBtn').disabled = false;
+
+    var statEl = document.getElementById('statTotal');
+    statEl.textContent = parseInt(statEl.textContent.replace(/,/g,'')) + data.count;
+
+    showToast('Generated ' + data.count + ' unique user agents!');
+  } catch (e) {
+    loader.classList.remove('show');
+    btn.disabled = false;
+    showErr('Network error. Please try again.');
+  }
+}
+
+function showErr(msg) {
+  document.getElementById('errText').textContent = msg;
+  document.getElementById('errMsg').classList.add('show');
+}
+
+function copyAll() {
+  var txt = document.getElementById('outputArea').value;
+  if (!txt) return;
+  navigator.clipboard.writeText(txt).then(function(){ showToast('Copied to clipboard!'); }).catch(function(){ showToast('Copy failed. Please select manually.'); });
+}
+
+function downloadTxt() {
+  var txt = document.getElementById('outputArea').value;
+  if (!txt) return;
+  var blob = new Blob([txt], {type:'text/plain'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'user-agents-itbh-' + Date.now() + '.txt';
+  a.click();
+}
+
+function clearResults() {
+  document.getElementById('outputArea').value = '';
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('copyBtn').disabled = true;
+  document.getElementById('dlBtn').disabled = true;
+  lastResults = [];
+}
+
+function showToast(msg, isErr) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isErr ? ' error' : '');
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2800);
+}
+
+(function() {
+  var p = document.getElementById('particles');
+  for (var i = 0; i < 18; i++) {
+    var el = document.createElement('div');
+    el.className = 'particle';
+    el.style.left = Math.random() * 100 + '%';
+    el.style.animationDuration = (8 + Math.random() * 14) + 's';
+    el.style.animationDelay = (Math.random() * 12) + 's';
+    el.style.opacity = Math.random() * .5 + .2;
+    p.appendChild(el);
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title><%= title %></title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#050816;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;overflow-x:hidden}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.08)}66%{transform:translate(-20px,20px) scale(.96)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.18;pointer-events:none;animation:orbFloat 12s ease-in-out infinite}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,#7c3aed,transparent 70%);top:-100px;left:-100px}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,#4f46e5,transparent 70%);bottom:-80px;right:-80px;animation-delay:-4s}
+.card{background:rgba(15,23,42,.85);border:1px solid rgba(139,92,246,.25);border-radius:24px;padding:44px 40px;width:100%;max-width:520px;animation:fadeIn .6s ease;position:relative;z-index:1;backdrop-filter:blur(20px);box-shadow:0 8px 60px rgba(0,0,0,.6)}
+.logo{text-align:center;margin-bottom:28px}
+.logo h1{font-size:1.4rem;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo p{font-size:.72rem;color:#64748b;margin-top:4px;letter-spacing:1px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.72rem;font-weight:700;color:#a78bfa;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.field input,.field input[type=file]{width:100%;padding:12px 16px;background:#0f172a;border:1.5px solid rgba(139,92,246,.3);border-radius:12px;color:#e2e8f0;font-size:.88rem;font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.2)}
+.field input::placeholder{color:#334155}
+.field input[type=file]{padding:10px 14px;cursor:pointer;color:#94a3b8}
+.hw-box{background:rgba(124,58,237,.07);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:.72rem;color:#94a3b8}
+.hw-box strong{color:#c4b5fd;display:block;margin-bottom:4px;font-size:.7rem;letter-spacing:.5px;text-transform:uppercase}
+#hwid-val{word-break:break-all;font-family:monospace;font-size:.65rem;color:#818cf8}
+.info-box{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-radius:10px;padding:12px 16px;margin-bottom:18px;font-size:.75rem;color:#94a3b8;line-height:1.8}
+.info-box strong{color:#a78bfa}
+.btn{width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:12px;font-family:'Poppins',sans-serif;font-weight:800;font-size:.92rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .25s;margin-top:4px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.5)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:10px;padding:10px 16px;margin-bottom:16px;font-size:.78rem;color:#fca5a5;display:flex;align-items:center;gap:8px}
+.success-box{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);border-radius:14px;padding:28px 24px;text-align:center}
+.success-box h2{color:#4ade80;font-size:1.1rem;margin-bottom:10px}
+.license-display{background:#0f172a;border:2px solid rgba(34,197,94,.4);border-radius:12px;padding:18px;font-family:monospace;font-size:1.1rem;color:#4ade80;letter-spacing:3px;margin:16px 0;word-break:break-all}
+.success-box p{font-size:.78rem;color:#94a3b8;line-height:1.8}
+.back-link{display:inline-flex;align-items:center;gap:6px;margin-top:16px;color:#a78bfa;text-decoration:none;font-size:.8rem;font-weight:600}
+.back-link:hover{text-decoration:underline}
+.spin{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto}
+.req-note{font-size:.68rem;color:#475569;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<div class="card">
+  <div class="logo">
+    <h1>IT TECH BROTHERS HUB</h1>
+    <p>LICENSE APPLICATION</p>
+  </div>
+
+  <% if (success) { %>
+    <div class="success-box">
+      <h2><i class="fas fa-check-circle"></i> License Generated!</h2>
+      <p>Your license key has been issued. Save it securely — it will not be shown again.</p>
+      <div class="license-display"><%= success %></div>
+      <p>This license is bound to your current device. It cannot be used on any other device or browser.</p>
+      <a href="/login" class="back-link"><i class="fas fa-arrow-left"></i> Back to Login</a>
+    </div>
+  <% } else { %>
+    <div class="info-box">
+      <strong>License Requirements:</strong><br/>
+      All fields are mandatory. Your license will be bound to this device only.
+      A second license will not be issued with the same email, contact number, or device.
+    </div>
+
+    <% if (err) { %>
+      <div class="err"><i class="fas fa-times-circle"></i> <%= err %></div>
+    <% } %>
+
+    <form method="POST" action="/register" enctype="multipart/form-data" id="regForm">
+      <input type="hidden" name="hardware_id" id="hwid-input"/>
+
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" name="full_name" placeholder="Your full legal name" required/>
+      </div>
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="valid@email.com" required/>
+      </div>
+      <div class="field">
+        <label>Contact Number</label>
+        <input type="tel" name="contact" placeholder="+1 234 567 8900" required/>
+      </div>
+      <div class="field">
+        <label>Profile Picture <span class="req-note">(JPG, PNG, or WEBP — max 5MB)</span></label>
+        <input type="file" name="picture" accept=".jpg,.jpeg,.png,.webp" required/>
+      </div>
+
+      <div class="hw-box">
+        <strong><i class="fas fa-fingerprint"></i> &nbsp;Your Hardware ID (auto-detected)</strong>
+        <span id="hwid-val">Detecting...</span>
+      </div>
+
+      <button type="submit" class="btn" id="regBtn">
+        <span id="btnText">APPLY FOR LICENSE</span>
+        <div class="spin" id="btnSpin"></div>
+      </button>
+    </form>
+    <div style="text-align:center;margin-top:18px;font-size:.78rem;color:#475569">
+      Already have a license? <a href="/login" style="color:#a78bfa;text-decoration:none;font-weight:600">Login here</a>
+    </div>
+  <% } %>
+</div>
+
+<script>
+(function(){
+  async function getHardwareId(){
+    const nav=navigator;
+    const parts=[];
+    parts.push(nav.userAgent||'');
+    parts.push(nav.language||'');
+    parts.push(nav.hardwareConcurrency||0);
+    parts.push(screen.width+'x'+screen.height+'x'+screen.colorDepth);
+    parts.push(nav.platform||'');
+    parts.push(Intl.DateTimeFormat().resolvedOptions().timeZone||'');
+    try{
+      const c=document.createElement('canvas');
+      const ctx=c.getContext('2d');
+      ctx.textBaseline='top';
+      ctx.font='14px Arial';
+      ctx.fillStyle='#f60';
+      ctx.fillRect(125,1,62,20);
+      ctx.fillStyle='#069';
+      ctx.fillText('ITBH-FP',2,15);
+      ctx.fillStyle='rgba(102,204,0,0.7)';
+      ctx.fillText('ITBH-FP',4,17);
+      parts.push(c.toDataURL().slice(-60));
+    }catch(e){}
+    try{
+      const gl=document.createElement('canvas').getContext('webgl');
+      if(gl){
+        const dbg=gl.getExtension('WEBGL_debug_renderer_info');
+        if(dbg){
+          parts.push(gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL)||'');
+          parts.push(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)||'');
+        }
+      }
+    }catch(e){}
+    const raw=parts.join('|');
+    const enc=new TextEncoder().encode(raw);
+    const buf=await crypto.subtle.digest('SHA-256',enc);
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  getHardwareId().then(id=>{
+    document.getElementById('hwid-input').value=id;
+    document.getElementById('hwid-val').textContent=id.substring(0,32)+'...';
+  });
+  const form=document.getElementById('regForm');
+  if(form){
+    form.addEventListener('submit',function(){
+      document.getElementById('btnText').style.display='none';
+      document.getElementById('btnSpin').style.display='block';
+      document.getElementById('regBtn').disabled=true;
+    });
+  }
+})();
+</script>
+</body>
+</html>

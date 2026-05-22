@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title><%= title %></title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#050816;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow-x:hidden}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.08)}66%{transform:translate(-20px,20px) scale(.96)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orb{position:fixed;border-radius:50%;filter:blur(80px);opacity:.18;pointer-events:none;animation:orbFloat 12s ease-in-out infinite}
+.orb1{width:500px;height:500px;background:radial-gradient(circle,#7c3aed,transparent 70%);top:-100px;left:-100px}
+.orb2{width:400px;height:400px;background:radial-gradient(circle,#4f46e5,transparent 70%);bottom:-80px;right:-80px;animation-delay:-4s}
+.card{background:rgba(15,23,42,.85);border:1px solid rgba(139,92,246,.25);border-radius:24px;padding:44px 40px;width:100%;max-width:440px;animation:fadeIn .6s ease;position:relative;z-index:1;backdrop-filter:blur(20px);box-shadow:0 8px 60px rgba(0,0,0,.6)}
+.logo{text-align:center;margin-bottom:28px}
+.logo h1{font-size:1.5rem;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#a78bfa,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.logo p{font-size:.72rem;color:#64748b;margin-top:4px;letter-spacing:1px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.72rem;font-weight:700;color:#a78bfa;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.field input{width:100%;padding:12px 16px;background:#0f172a;border:1.5px solid rgba(139,92,246,.3);border-radius:12px;color:#e2e8f0;font-size:.88rem;font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.2)}
+.field input::placeholder{color:#334155}
+.hw-box{background:rgba(124,58,237,.07);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:10px 14px;margin-bottom:18px;font-size:.72rem;color:#94a3b8}
+.hw-box strong{color:#c4b5fd;display:block;margin-bottom:4px;font-size:.7rem;letter-spacing:.5px;text-transform:uppercase}
+#hwid-val{word-break:break-all;font-family:monospace;font-size:.68rem;color:#818cf8}
+.btn{width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:12px;font-family:'Poppins',sans-serif;font-weight:800;font-size:.92rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .25s;margin-top:4px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.5)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:10px;padding:10px 16px;margin-bottom:16px;font-size:.78rem;color:#fca5a5;display:flex;align-items:center;gap:8px}
+.divider{text-align:center;margin:20px 0;color:#334155;font-size:.75rem;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:rgba(139,92,246,.15)}
+.divider::before{left:0}.divider::after{right:0}
+.reg-link{text-align:center;font-size:.78rem;color:#64748b}
+.reg-link a{color:#a78bfa;text-decoration:none;font-weight:600}
+.reg-link a:hover{text-decoration:underline}
+.spin{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;margin:0 auto}
+</style>
+</head>
+<body>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<div class="card">
+  <div class="logo">
+    <h1>IT TECH BROTHERS HUB</h1>
+    <p>USER AGENT GENERATOR — LICENSED ACCESS</p>
+  </div>
+
+  <% if (err === 'invalid') { %>
+    <div class="err"><i class="fas fa-times-circle"></i> Invalid license key. Please check and try again.</div>
+  <% } else if (err === 'device') { %>
+    <div class="err"><i class="fas fa-shield-alt"></i> This license is bound to a different device.</div>
+  <% } else if (err === 'revoked') { %>
+    <div class="err"><i class="fas fa-ban"></i> Your license has been revoked. Contact support.</div>
+  <% } else if (err === 'missing') { %>
+    <div class="err"><i class="fas fa-exclamation-circle"></i> Please fill in all fields.</div>
+  <% } else if (err === 'server') { %>
+    <div class="err"><i class="fas fa-server"></i> Server error. Please try again.</div>
+  <% } %>
+
+  <form method="POST" action="/login" id="loginForm">
+    <div class="field">
+      <label>License Key</label>
+      <input type="text" name="license_key" placeholder="ITBH-XXXXX-XX-DD-MM-YY" required autocomplete="off" style="text-transform:uppercase;letter-spacing:1px"/>
+    </div>
+    <input type="hidden" name="hardware_id" id="hwid-input"/>
+    <div class="hw-box">
+      <strong><i class="fas fa-fingerprint"></i> &nbsp;Your Hardware ID (auto-detected)</strong>
+      <span id="hwid-val">Detecting...</span>
+    </div>
+    <button type="submit" class="btn" id="loginBtn">
+      <span id="btnText">ENTER</span>
+      <div class="spin" id="btnSpin"></div>
+    </button>
+  </form>
+
+  <div class="divider">Don't have a license?</div>
+  <div class="reg-link"><a href="/register">Apply for a License &rarr;</a></div>
+</div>
+
+<script>
+(function(){
+  async function getHardwareId(){
+    const nav=navigator;
+    const parts=[];
+    parts.push(nav.userAgent||'');
+    parts.push(nav.language||'');
+    parts.push(nav.hardwareConcurrency||0);
+    parts.push(screen.width+'x'+screen.height+'x'+screen.colorDepth);
+    parts.push(nav.platform||'');
+    parts.push(Intl.DateTimeFormat().resolvedOptions().timeZone||'');
+    try{
+      const c=document.createElement('canvas');
+      const ctx=c.getContext('2d');
+      ctx.textBaseline='top';
+      ctx.font='14px Arial';
+      ctx.fillStyle='#f60';
+      ctx.fillRect(125,1,62,20);
+      ctx.fillStyle='#069';
+      ctx.fillText('ITBH-FP',2,15);
+      ctx.fillStyle='rgba(102,204,0,0.7)';
+      ctx.fillText('ITBH-FP',4,17);
+      parts.push(c.toDataURL().slice(-60));
+    }catch(e){}
+    try{
+      const gl=document.createElement('canvas').getContext('webgl');
+      if(gl){
+        const dbg=gl.getExtension('WEBGL_debug_renderer_info');
+        if(dbg){
+          parts.push(gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL)||'');
+          parts.push(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)||'');
+        }
+      }
+    }catch(e){}
+    const raw=parts.join('|');
+    const enc=new TextEncoder().encode(raw);
+    const buf=await crypto.subtle.digest('SHA-256',enc);
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  getHardwareId().then(id=>{
+    document.getElementById('hwid-input').value=id;
+    document.getElementById('hwid-val').textContent=id.substring(0,32)+'...';
+  });
+  document.getElementById('loginForm').addEventListener('submit',function(e){
+    document.getElementById('btnText').style.display='none';
+    document.getElementById('btnSpin').style.display='block';
+    document.getElementById('loginBtn').disabled=true;
+  });
+})();
+</script>
+</body>
+</html>

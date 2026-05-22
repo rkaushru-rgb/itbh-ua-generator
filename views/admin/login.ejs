@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title><%= title %></title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:#030711;color:#e2e8f0;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.card{background:rgba(10,18,36,.9);border:1px solid rgba(139,92,246,.2);border-radius:20px;padding:44px 40px;width:100%;max-width:400px;box-shadow:0 8px 60px rgba(0,0,0,.7)}
+.logo{text-align:center;margin-bottom:28px}
+.logo h1{font-size:1.2rem;font-weight:900;letter-spacing:2px;color:#a78bfa}
+.logo p{font-size:.7rem;color:#475569;margin-top:4px;letter-spacing:1px}
+.admin-badge{display:inline-block;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5;font-size:.65rem;font-weight:700;letter-spacing:1px;padding:3px 12px;border-radius:20px;margin-bottom:6px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.7rem;font-weight:700;color:#a78bfa;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.field input{width:100%;padding:12px 16px;background:#0a1224;border:1.5px solid rgba(139,92,246,.25);border-radius:10px;color:#e2e8f0;font-size:.88rem;font-family:'Poppins',sans-serif;outline:none;transition:border-color .2s}
+.field input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.field input::placeholder{color:#334155}
+.btn{width:100%;padding:13px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;border-radius:10px;font-family:'Poppins',sans-serif;font-weight:800;font-size:.88rem;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:all .25s;margin-top:4px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.5)}
+.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:9px 14px;margin-bottom:14px;font-size:.76rem;color:#fca5a5}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <div class="admin-badge">ADMIN PANEL</div>
+    <h1>IT TECH BROTHERS HUB</h1>
+    <p>ADMINISTRATOR ACCESS ONLY</p>
+  </div>
+  <% if (err === 'invalid') { %><div class="err"><i class="fas fa-times-circle"></i> Invalid credentials.</div><% } %>
+  <% if (err === 'missing') { %><div class="err"><i class="fas fa-exclamation-circle"></i> All fields required.</div><% } %>
+  <form method="POST" action="/admin/login">
+    <div class="field">
+      <label>Username</label>
+      <input type="text" name="username" required autocomplete="off"/>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" name="password" required/>
+    </div>
+    <button type="submit" class="btn">LOGIN</button>
+  </form>
+</div>
+</body>
+</html>
